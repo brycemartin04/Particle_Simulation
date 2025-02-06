@@ -7,7 +7,7 @@ LDFLAGS = -L/opt/homebrew/lib -lsfml-graphics -lsfml-window -lsfml-system
 TARGET = main
 
 # Source files
-SRC = main.cpp Particle.cpp Border.cpp
+SRC = main.cpp Particle.cpp Border.cpp Solver.cpp
 
 # Object files
 OBJ = $(SRC:.cpp=.o)

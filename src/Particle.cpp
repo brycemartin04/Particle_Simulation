@@ -2,17 +2,16 @@
 #include <cmath>
 
 // Time step for the simulation.
-const float TIME_STEP = 0.1f;
+const float deltaTime = 0.1f;
 
 Particle::Particle(sf::Vector2f position, float radius, sf::Vector2f initialVelocity, sf::Color color) {
     // For Verlet, the current position is the given position.
-    currentPos = position;
+    currentPosition = position;
     // Set the previous position so that the initial velocity is:
-    //   velocity = currentPos - previousPos   =>   previousPos = currentPos - velocity * dt
-    previousPos = position - initialVelocity * TIME_STEP;
+    //   velocity = currentPosition - previousPosition   =>   previousPosition = currentPosition - velocity * dt
+    previousPosition = position - initialVelocity * deltaTime;
     
     object.setRadius(radius);
-    // Center the circle shape.
     object.setOrigin({radius, radius});
     object.setPosition(position);
     object.setFillColor(color);
@@ -20,20 +19,21 @@ Particle::Particle(sf::Vector2f position, float radius, sf::Vector2f initialVelo
 
 void Particle::updatePosition() {
     // Gravity acceleration (pixels/s²)
-    sf::Vector2f acceleration(0.f, 9.91f);
+    const float GRAVITY = 9.81f;
+    sf::Vector2f acceleration(0.f, GRAVITY);
     
-    // Verlet integration: newPos = currentPos + (currentPos - previousPos) + acceleration * dt^2
-    sf::Vector2f temp = currentPos;
-    currentPos = currentPos + (currentPos - previousPos) + acceleration * (TIME_STEP * TIME_STEP);
-    previousPos = temp;
+    // Verlet integration: newPos = currentPosition + (currentPosition - previousPosition) + acceleration * dt^2
+    sf::Vector2f temp = currentPosition;
+    currentPosition = currentPosition + (currentPosition - previousPosition) + acceleration * (deltaTime * deltaTime);
+    previousPosition = temp;
     
     // Update the drawn position.
-    object.setPosition(currentPos);
+    object.setPosition(currentPosition);
 }
 
 void Particle::checkCollisions(Particle& other) {
-    sf::Vector2f pos1 = currentPos;
-    sf::Vector2f pos2 = other.currentPos;
+    sf::Vector2f pos1 = currentPosition;
+    sf::Vector2f pos2 = other.currentPosition;
     float r1 = object.getRadius();
     float r2 = other.object.getRadius();
     
@@ -49,13 +49,13 @@ void Particle::checkCollisions(Particle& other) {
         
         // --- Positional Correction ---
         // Move each particle by half the penetration along the normal.
-        currentPos += normal * (penetration / 2.f);
-        other.currentPos -= normal * (penetration / 2.f);
+        currentPosition += normal * (penetration / 2.f);
+        other.currentPosition -= normal * (penetration / 2.f);
         
         // --- Velocity (Bounce) Correction ---
-        // In Verlet, the implicit velocity is (currentPos - previousPos).
-        sf::Vector2f v1 = currentPos - previousPos;
-        sf::Vector2f v2 = other.currentPos - other.previousPos;
+        // In Verlet, the implicit velocity is (currentPosition - previousPosition).
+        sf::Vector2f v1 = currentPosition - previousPosition;
+        sf::Vector2f v2 = other.currentPosition - other.previousPosition;
         float v1n = v1.x * normal.x + v1.y * normal.y;
         float v2n = v2.x * normal.x + v2.y * normal.y;
         float restitution = 0.5f;
@@ -68,21 +68,21 @@ void Particle::checkCollisions(Particle& other) {
             // Reflect the normal component.
             v1nVec = -restitution * v1nVec;
             v1 = v1t + v1nVec;
-            // Update previousPos accordingly.
-            previousPos = currentPos - v1;
+            // Update previousPosition accordingly.
+            previousPosition = currentPosition - v1;
         }
         if (v2n > 0.f) { // Note: for the other particle, the normal points from it toward the first particle.
             sf::Vector2f v2nVec = normal * v2n;
             sf::Vector2f v2t = v2 - v2nVec;
             v2nVec = -restitution * v2nVec;
             v2 = v2t + v2nVec;
-            other.previousPos = other.currentPos - v2;
+            other.previousPosition = other.currentPosition - v2;
         }
     }
 }
 
 void Particle::checkCollisions(Border& border) {
-    sf::Vector2f pos = currentPos;
+    sf::Vector2f pos = currentPosition;
     sf::Vector2f borderPos = border.getObject().getPosition();
     float particleRadius = object.getRadius();
     float borderRadius = border.getObject().getRadius();
@@ -96,23 +96,23 @@ void Particle::checkCollisions(Border& border) {
         sf::Vector2f normal = diff / dist;
         
         // Push the particle back inside.
-        currentPos -= normal * penetration;
+        currentPosition -= normal * penetration;
         
         // Reflect the velocity.
-        sf::Vector2f v = currentPos - previousPos;
+        sf::Vector2f v = currentPosition - previousPosition;
         float vn = v.x * normal.x + v.y * normal.y;
         if (vn > 0.f) {
             float restitution = 0.5f;
             sf::Vector2f v_n = normal * vn;
             sf::Vector2f v_t = v - v_n;
             v = v_t - restitution * v_n;
-            previousPos = currentPos - v;
+            previousPosition = currentPosition - v;
         }
     }
 }
 
 sf::Vector2f Particle::getVelocity() const {
-    return currentPos - previousPos;
+    return currentPosition - previousPosition;
 }
 
 sf::CircleShape& Particle::getObject() {

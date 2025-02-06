@@ -26,14 +26,15 @@ public:
     sf::CircleShape& getObject();
     
     // Expose currentPos for internal use (could be made friend or use getters).
-    sf::Vector2f currentPos;
+    sf::Vector2f currentPosition;
+    
+    // For Verlet, store the previous position.
+    sf::Vector2f previousPosition;
 
 private:
-    // For Verlet, store the previous position.
-    sf::Vector2f previousPos;
-    
+      
     // The SFML circle shape for drawing.
     sf::CircleShape object;
 };
 
-#endif // PARTICLE_HPP
+#endif
