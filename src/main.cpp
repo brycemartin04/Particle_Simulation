@@ -13,8 +13,8 @@ int main() {
 
     std::vector<Particle> particles;
 
-    for (int i = 100; i < 600; i+=3){
-        particles.push_back(Particle({(float)i,360},3,{0,0},sf::Color::Red));
+    for (int i = 100; i < 600; i+=20){
+        particles.push_back(Particle({(float)i,360},20,{0,0},sf::Color::Red));
     }
     Border* border = new Border({360,360},200,sf::Color::Black);
 
