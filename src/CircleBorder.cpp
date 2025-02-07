@@ -1,6 +1,6 @@
-#include "Border.hpp"
+#include "CircleBorder.hpp"
 
-Border::Border(sf::Vector2f position, float radius, sf::Color color) {
+CircleBorder::CircleBorder(sf::Vector2f position, float radius, sf::Color color) {
     object.setRadius(radius);
     // Center the circle shape.
     object.setOrigin({radius, radius});
@@ -10,6 +10,6 @@ Border::Border(sf::Vector2f position, float radius, sf::Color color) {
     object.setFillColor(color);
 }
 
-sf::CircleShape& Border::getObject() {
+sf::CircleShape& CircleBorder::getObject() {
     return object;
 }

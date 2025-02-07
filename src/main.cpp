@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "Particle.hpp"
-#include "Border.hpp"
+#include "CircleBorder.hpp"
+#include "RectBorder.hpp"
 #include "Solver.hpp"
 #include "Spawner.hpp"
 #include <vector>
@@ -15,10 +16,11 @@ int main() {
 
     std::vector<Particle> particles;
     
-    Border border(sf::Vector2f(width/2, height/2), 360.f, sf::Color::Black);
+    CircleBorder cBorder(sf::Vector2f(width/2, height/2), 360.f, sf::Color::Black);
+    RectBorder rBorder(sf::Vector2f(width/2, height/2),sf::Vector2f(width - 20, height - 20), sf::Color::Black);
     Solver* solver = new Solver();
-    Spawner spawner({width/1.5,height/2},10.f, sf::Vector2f(-30.f, -50.f),500,10);
-    Spawner spawner2({width/3,height/2},10.f, sf::Vector2f(30.f, -50.f),500,10);
+    Spawner spawner({width/4,height/3},5.f, sf::Vector2f(100.f, 0.f),1500,2);
+    //Spawner spawner2({width/3,height/2},10.f, sf::Vector2f(30.f, -50.f),500,10);
     int temp = 0;
 
     while (window.isOpen()){
@@ -32,11 +34,11 @@ int main() {
         }
 
         spawner.update(particles);
-        spawner2.update(particles);
+        //spawner2.update(particles);
         window.clear(sf::Color::White);
 
         // Draw the border.
-        window.draw(border.getObject());
+        window.draw(rBorder.getObject());
 
         // Check collisions between particles and update them.
         // To avoid duplicate checks, use a nested loop.
@@ -46,7 +48,7 @@ int main() {
                 solver->solveParticleCollision(particles[i], particles[j]);
             }
             // Check collision with the border.
-            solver->solveBorderCollision(particles[i], border);
+            solver->solveBorderCollision(particles[i], rBorder);
             // Update the particle’s position via Verlet integration.
             
         }

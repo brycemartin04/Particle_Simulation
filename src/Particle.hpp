@@ -2,7 +2,6 @@
 #define PARTICLE_HPP
 
 #include <SFML/Graphics.hpp>
-#include "Border.hpp"
 
 class Particle {
 public:
@@ -12,12 +11,6 @@ public:
     
     // Update the particle’s position using Verlet integration.
     void updatePosition();
-    
-    // Resolve collisions with another particle.
-    void checkCollisions(Particle& other);
-    
-    // Resolve collisions with a circular border.
-    void checkCollisions(Border& border);
 
     // Compute the implicit velocity (current - previous).
     sf::Vector2f getVelocity() const;

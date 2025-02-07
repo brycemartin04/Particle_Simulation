@@ -6,6 +6,7 @@ void Solver::solveParticleCollision(Particle& p1, Particle& p2) {
     float r1 = p1.getObject().getRadius();
     float r2 = p2.getObject().getRadius();
     
+    
     sf::Vector2f diff = pos1 - pos2;
     float dist = std::sqrt(diff.x * diff.x + diff.y * diff.y);
     
@@ -44,14 +45,14 @@ void Solver::solveParticleCollision(Particle& p1, Particle& p2) {
         
         // Apply the impulse to the particles.
         if (impulse < .5f) {
-        
+      
         p1.currentPosition += normal * impulse / 1.f;   
         p2.currentPosition -= normal * impulse / 1.f;
         }
     }
 }
 
-void Solver::solveBorderCollision(Particle& p, Border& b) {
+void Solver::solveBorderCollision(Particle& p, CircleBorder& b) {
     sf::Vector2f pos = p.currentPosition;
     sf::Vector2f borderPos = b.getObject().getPosition();
     float particleRadius = p.getObject().getRadius();
@@ -85,4 +86,46 @@ void Solver::solveBorderCollision(Particle& p, Border& b) {
             p.previousPosition = p.currentPosition - v1 * damping;
         }
     }
+}
+
+void Solver::solveBorderCollision(Particle& p, RectBorder& b) {
+    sf::Vector2f pos = p.currentPosition;
+    sf::Vector2f prevPos = p.previousPosition;
+    float radius = p.getObject().getRadius();
+
+    // Get rectangle position and size directly (SFML 3 changes)
+    sf::Vector2f rectPos = b.getObject().getPosition();
+    sf::Vector2f rectSize = b.getObject().getSize();
+
+    float left = rectPos.x - rectSize.x / 2;
+    float right = rectPos.x + rectSize.x / 2;
+    float top = rectPos.y - rectSize.y / 2;
+    float bottom = rectPos.y + rectSize.y / 2;
+
+    // Compute velocity
+    sf::Vector2f velocity = pos - prevPos;
+
+    float damping = 0.5f;
+
+    // Check collision with left and right edges
+    if (pos.x - radius < left) {
+        pos.x = left + radius; // Move particle inside the boundary
+        velocity.x = -velocity.x * damping; // Reflect and apply some damping
+    } else if (pos.x + radius > right) {
+        pos.x = right - radius;
+        velocity.x = -velocity.x * damping;
+    }
+
+    // Check collision with top and bottom edges
+    if (pos.y - radius < top) {
+        pos.y = top + radius;
+        velocity.y = -velocity.y * damping;
+    } else if (pos.y + radius > bottom) {
+        pos.y = bottom - radius;
+        velocity.y = -velocity.y * damping;
+    }
+
+    // Update positions
+    p.currentPosition = pos;
+    p.previousPosition = pos - velocity;
 }
