@@ -33,19 +33,21 @@ void Solver::solveParticleCollision(Particle& p1, Particle& p2) {
 
         // --- Velocity (Bounce) Correction ---
         // In Verlet, the implicit velocity is (currentPosition - previousPosition).
-        //sf::Vector2f v1 = p1.currentPosition - p1.previousPosition;
-        //sf::Vector2f v2 = p2.currentPosition - p2.previousPosition;
-        //float v1n = v1.x * normal.x + v1.y * normal.y;
-        //float v2n = v2.x * normal.x + v2.y * normal.y;
+        v1 = p1.currentPosition - p1.previousPosition;
+         v2 = p2.currentPosition - p2.previousPosition;
+        float v1n = v1.x * normal.x + v1.y * normal.y;
+        float v2n = v2.x * normal.x + v2.y * normal.y;
         
-        /*
+        
         // Compute the impulse.
-        float impulse = 2.f * (v1n - v2n) / (1.f / 1.f + 1.f / 1.f);
+        float impulse = 0.1f * (v1n - v2n) / (1.f / 1.f + 1.f / 1.f);
         
         // Apply the impulse to the particles.
-        p1.currentPosition += normal * impulse / 1.f;       remove impulse off each other
+        if (impulse < .5f) {
+        
+        p1.currentPosition += normal * impulse / 1.f;   
         p2.currentPosition -= normal * impulse / 1.f;
-        */
+        }
     }
 }
 
@@ -76,7 +78,7 @@ void Solver::solveBorderCollision(Particle& p, Border& b) {
             v = v_t - restitution * v_n;
             p.previousPosition = p.currentPosition - v;
 
-            float damping = .99f; // 1% energy loss on collision
+            float damping = 1.f; // 1% energy loss on collision
 
             // For Particle 1:
             sf::Vector2f v1 = p.currentPosition - p.previousPosition;
