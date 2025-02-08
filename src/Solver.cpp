@@ -35,7 +35,7 @@ void Solver::solveParticleCollision(Particle& p1, Particle& p2) {
         // --- Velocity (Bounce) Correction ---
         // In Verlet, the implicit velocity is (currentPosition - previousPosition).
         v1 = p1.currentPosition - p1.previousPosition;
-         v2 = p2.currentPosition - p2.previousPosition;
+        v2 = p2.currentPosition - p2.previousPosition;
         float v1n = v1.x * normal.x + v1.y * normal.y;
         float v2n = v2.x * normal.x + v2.y * normal.y;
         

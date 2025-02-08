@@ -9,12 +9,10 @@
 class Solver {
 public:
     void solveParticleCollision(Particle& p1, Particle& p2);
-
     void solveBorderCollision(Particle& p, CircleBorder& b);
     void solveBorderCollision(Particle& p, RectBorder& b);
 
 private:
-    
 };
 
 #endif

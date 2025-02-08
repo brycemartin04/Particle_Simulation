@@ -40,6 +40,9 @@
         "istream": "cpp",
         "mutex": "cpp",
         "streambuf": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "deque": "cpp",
+        "forward_list": "cpp",
+        "unordered_set": "cpp"
     }
 }

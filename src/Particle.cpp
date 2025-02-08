@@ -9,13 +9,14 @@ Particle::Particle(sf::Vector2f position, float radius, sf::Vector2f initialVelo
     currentPosition = position;
     // Set the previous position so that the initial velocity is:
     //   velocity = currentPosition - previousPosition   =>   previousPosition = currentPosition - velocity * dt
-    previousPosition = position - initialVelocity * deltaTime;
+    previousPosition = position - initialVelocity * .1f;
     
     object.setRadius(radius);
     object.setOrigin({radius, radius});
     object.setPosition(position);
     object.setFillColor(color);
 }
+
 
 void Particle::updatePosition() {
     // Gravity acceleration (pixels/s²)
@@ -25,6 +26,7 @@ void Particle::updatePosition() {
     // Verlet integration: newPos = currentPosition + (currentPosition - previousPosition) + acceleration * dt^2
     sf::Vector2f temp = currentPosition;
     currentPosition = currentPosition + (currentPosition - previousPosition) + acceleration * (deltaTime * deltaTime);
+
     previousPosition = temp;
     
     // Update the drawn position.
