@@ -44,7 +44,7 @@ void Solver::solveParticleCollision(Particle& p1, Particle& p2) {
         float impulse = 0.1f * (v1n - v2n) / (1.f / 1.f + 1.f / 1.f);
         
         // Apply the impulse to the particles.
-        if (impulse < .5f) {
+        if (impulse < .45f) {
       
         p1.currentPosition += normal * impulse / 1.f;   
         p2.currentPosition -= normal * impulse / 1.f;

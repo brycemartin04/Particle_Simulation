@@ -39,8 +39,8 @@ int main() {
     CircleBorder cBorder(sf::Vector2f(width/2, height/2), 360.f, sf::Color::Black);
     RectBorder rBorder(sf::Vector2f(width/2, height/2),sf::Vector2f(width - 20, height - 20), sf::Color::Black);
     Solver* solver = new Solver();
-    //Spawner spawner({width/4,height/3},5.f, sf::Vector2f(100.f, 0.f),1000,2);
-    Spawner spawner2({width/3,height/2},10.f, sf::Vector2f(30.f, -50.f),500,10);
+    Spawner spawner({width/4,height/3},10.f, sf::Vector2f(100.f, 0.f),1000,2);
+    //Spawner spawner2({width/3,height/2},10.f, sf::Vector2f(0.1f, 20.f),500,10);
     int temp = 0;
     sf::Vector2f mousePos;
 
@@ -77,8 +77,8 @@ int main() {
             }
         }
 
-        //spawner.update(particles);
-        spawner2.update(particles);
+        spawner.update(particles);
+        //spawner2.update(particles);
         window.clear(sf::Color::White);
 
         // Draw the border.
@@ -94,15 +94,14 @@ int main() {
             // Check collision with the border.
             solver->solveBorderCollision(particles[i], rBorder);
             // Update the particle’s position via Verlet integration.
+            particles[i].updatePosition();
+            window.draw(particles[i].getObject());
             
         }
         
         }
 
-        for (auto& particle : particles) {
-            particle.updatePosition();
-            window.draw(particle.getObject());
-        }
+       
 
         window.display();
 
